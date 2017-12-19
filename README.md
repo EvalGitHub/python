@@ -1,8 +1,12 @@
 基础知识普及：
+========================
 let us see an example :
-方式一：start_urls + parse  [如果我们没有写start_urls,以及回调parse，他会默认爬去start_urls的url,执行parse,]
-  import scrapy
-  class mySpider(scrapy.Spider):
+
+    方式一：start_urls + parse 
+
+    [如果我们没有写start_urls,以及回调parse，他会默认爬去start_urls的url,执行parse,]
+    import scrapy
+    class mySpider(scrapy.Spider):
     name = "sp"
     allowed_domains=['example.com']
     start_urls=[
@@ -16,9 +20,10 @@ let us see an example :
           ......
           
           
- 方式二：直接使用start_requests
-  import scrapy
-  class mySpider(scrapy.Spider):
+    方式二：直接使用start_requests
+    
+    import scrapy
+    class mySpider(scrapy.Spider):
     name = "sp"
     allowed_domains=['example.com']
     def start_requests(self):
