@@ -68,10 +68,12 @@ ROBOTSTXT_OBEY = False
 #配置下载图片
 ITEM_PIPELINES = {
     #数字的大小代表执行顺序的大小，越小越先执行
-   'ArticleSplider.pipelines.JsonWidthEncodingPipeline': 2,
+   #'ArticleSplider.pipelines.JsonWidthEncodingPipeline': 2,
     #'scrapy.pipelines.images.ImagesPipeline':1
 
-    'ArticleSplider.pipelines.ArticleImagePipeline':1
+    #'ArticleSplider.pipelines.ArticleImagePipeline':1,
+
+    'ArticleSplider.pipelines.MysqlTwistedPipline':1
 }
 #图片的路径
 IMAGES_URLS_FIELD='font_image_url'
@@ -107,3 +109,8 @@ IMAGE_MIN_WIDTH=100
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+MYSQL_HOST="127.0.0.1"
+MYSQL_DBNAME="article_spider"
+MYSQL_USER="root"
+MYSQL_PASSWORD=""
