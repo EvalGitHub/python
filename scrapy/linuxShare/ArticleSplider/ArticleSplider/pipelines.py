@@ -11,6 +11,8 @@ import json
 
 from scrapy.pipelines.images import  ImagesPipeline
 
+
+
 import MySQLdb
 import MySQLdb.cursors
 
@@ -74,7 +76,7 @@ class MysqlTwistedPipline(object):
 
 
 
-#存放数据
+#存放数据（到本地json文件）
 class JsonWidthEncodingPipeline(object):
     def __init__(self):
         self.file =codecs.open("article.json","w",encoding="utf-8")
@@ -90,9 +92,10 @@ class JsonWidthEncodingPipeline(object):
 #下载图片
 class ArticleImagePipeline(ImagesPipeline):
     def item_completed(self,results,item,info):
-        for ok, value in results:
-            image_file_path=value['path']
-        item['font_image_path']=image_file_path
+        if "font_image_url" in item:
+            for ok, value in results:
+                image_file_path=value['path']
+            item['font_image_path']=image_file_path
         return item
 
 

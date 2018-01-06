@@ -8,11 +8,12 @@ from urllib import parse
 
 import datetime
 
-from  ArticleSplider.items import JobBoleArticleitem
+from  ArticleSplider.items import JobBoleArticleitem,ArticleItemLoader
 
 
 from ArticleSplider.utils.common import get_md5
 
+from scrapy.loader import ItemLoader
 
 class JobboleSpider(scrapy.Spider):
     name = 'jobbole'
@@ -46,9 +47,8 @@ class JobboleSpider(scrapy.Spider):
         article_item=JobBoleArticleitem()
 
         # 提取文章的具体字段
-
+        '''
         font_image_url=response.meta.get("font_image_url","")#文章封面图
-
         title = response.xpath("//div[@class='entry-header']/h1/text()").extract_first("no data no data")
         create_date = response.xpath("//p[@class='entry-meta-hide-on-mobile']/text()").extract()[0].strip().replace("·",
                                                                                                                     "")
@@ -73,6 +73,8 @@ class JobboleSpider(scrapy.Spider):
         tag_list = response.xpath('//p[@class="entry-meta-hide-on-mobile"]/a/text()').extract()
         tag_list = [element for element in tag_list if not element.strip().endswith("评论")]
         tags = ",".join(tag_list)
+        '''
+
 
 
         # ------------------- 通过css选择器提取字段---------------------------------
@@ -94,7 +96,8 @@ class JobboleSpider(scrapy.Spider):
         tags=response.css("p.entry-meta-hide-on-mobile a::text").extract()[0]
         
         '''
-
+        '''
+        
         article_item["url_obj_id"] = get_md5(response.url)
         article_item["title"]   =title
 
@@ -115,5 +118,26 @@ class JobboleSpider(scrapy.Spider):
         article_item["fav_nums"]=fav_nums
         article_item["tags"]=tags
         article_item["content"]=content
+
+        '''
+
+
+#通过item_loader 加载item
+        font_image_url = response.meta.get("font_image_url", "")  # 文章封面图
+        item_loader = ArticleItemLoader(item=JobBoleArticleitem(),response=response)
+        item_loader.add_css("title",".entry-header h1::text")
+      #  item_loader.add_xpath()
+        item_loader.add_value("url",response.url)
+        item_loader.add_value("url_obj_id",get_md5(response.url))
+        item_loader.add_css("create_date","p.entry-meta-hide-on-mobile::text")
+        item_loader.add_value("font_image_url",[font_image_url])
+        item_loader.add_css("praise_nums",".vote-post-up h10::text")
+        item_loader.add_css("comment_nums","a[href='#article-comment'] span::text")
+        item_loader.add_css("fav_nums",".bookmark-btn::text")
+        item_loader.add_css("tags","p.entry-meta-hide-on-mobile a::text")
+        item_loader.add_css("content","div.entry")
+
+
+        article_item=item_loader.load_item()
 
         yield article_item
